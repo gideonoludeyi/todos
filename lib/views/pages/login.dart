@@ -29,22 +29,26 @@ class _LoginScreenState extends State<LoginScreen> {
               onSubmit: (credentials) => auth.login(credentials),
             ),
             const Divider(height: 32.0),
-            Text.rich(
-              TextSpan(
-                text: kDontHaveAnAccountText,
-                children: [
-                  WidgetSpan(
-                    child: TextButton(
-                      onPressed: () => uroutes.SignupRoute().go(context),
-                      child: const Text(kSignUpButtonText),
-                    ),
-                    alignment: PlaceholderAlignment.middle,
-                  ),
-                ],
-              ),
-            )
+            _signUpRedirectLink(),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _signUpRedirectLink() {
+    return Text.rich(
+      TextSpan(
+        text: kDontHaveAnAccountText,
+        children: [
+          WidgetSpan(
+            child: TextButton(
+              onPressed: () => uroutes.SignupRoute().go(context),
+              child: const Text(kSignUpButtonText),
+            ),
+            alignment: PlaceholderAlignment.middle,
+          ),
+        ],
       ),
     );
   }

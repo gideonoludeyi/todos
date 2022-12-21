@@ -34,22 +34,26 @@ class _SignupScreenState extends State<SignupScreen> {
               },
             ),
             const Divider(height: 32.0),
-            Text.rich(
-              TextSpan(
-                text: kAlreadyHaveAnAccountText,
-                children: [
-                  WidgetSpan(
-                    child: TextButton(
-                      onPressed: () => uroutes.LoginRoute().go(context),
-                      child: const Text(kLoginButtonText),
-                    ),
-                    alignment: PlaceholderAlignment.middle,
-                  ),
-                ],
-              ),
-            )
+            _loginRedirectLink(),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _loginRedirectLink() {
+    return Text.rich(
+      TextSpan(
+        text: kAlreadyHaveAnAccountText,
+        children: [
+          WidgetSpan(
+            child: TextButton(
+              onPressed: () => uroutes.LoginRoute().go(context),
+              child: const Text(kLoginButtonText),
+            ),
+            alignment: PlaceholderAlignment.middle,
+          ),
+        ],
       ),
     );
   }
