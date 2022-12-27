@@ -39,8 +39,8 @@ class _HomeState extends State<Home> {
             title: Text(user.name),
             actions: [
               TextButton(
-                onPressed: () {
-                  authService.logout();
+                onPressed: () async {
+                  await authService.logout();
 
                   if (!mounted) return;
                   routes.LoginRoute().go(context);

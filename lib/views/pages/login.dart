@@ -26,8 +26,8 @@ class _LoginScreenState extends State<LoginScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             LoginForm(
-              onSubmit: (credentials) {
-                auth.login(credentials);
+              onSubmit: (credentials) async {
+                await auth.login(credentials);
 
                 if (!mounted) return;
                 routes.HomeRoute().go(context);
