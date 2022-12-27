@@ -3,20 +3,17 @@ import 'package:todos/core/models/todo.model.dart' show Todo;
 import 'package:todos/core/services/todo_service.dart' show AddTodoInput;
 import 'package:todos/services/in_memory_todo_repo.dart' show InMemoryTodoRepo;
 
+import '../test_helper/builders/todo_builder.dart';
+
 void main() {
   group("getTodo()", () {
     test("should return todo if it exists", () async {
-      const todo = Todo(
-        id: "1",
-        title: "Todo#1",
-        description: "first",
-        completed: true,
-        userId: "0",
-      );
+      const todoId = "1";
+      final todo = TodoBuilder().withId(todoId).build();
 
       final repo = InMemoryTodoRepo(initialTodos: [todo]);
 
-      final result = repo.getTodo("1");
+      final result = repo.getTodo(todoId);
 
       expect(result, emits(todo));
     });
@@ -34,31 +31,13 @@ void main() {
     test("should return only todos of specified user", () {
       const userId = "1";
 
-      const todos = [
-        Todo(
-          id: "1",
-          title: "Todo#1",
-          description: "first",
-          completed: true,
-          userId: userId,
-        ),
-        Todo(
-          id: "2",
-          title: "Todo#2",
-          description: "second",
-          completed: true,
-          userId: "2",
-        ),
-        Todo(
-          id: "3",
-          title: "Todo#3",
-          description: "third",
-          completed: false,
-          userId: userId,
-        ),
-      ];
+      final builder = TodoBuilder().byUser(userId);
 
-      final repo = InMemoryTodoRepo(initialTodos: todos);
+      final repo = InMemoryTodoRepo(initialTodos: [
+        builder.withId("1").build(),
+        builder.withId("2").build(),
+        TodoBuilder().withId("3").byUser("2").build(),
+      ]);
 
       final todos$ = repo.getTodosByUserId(userId);
 
@@ -93,25 +72,27 @@ void main() {
     });
 
     test("should update todos list when a new todo is created", () async {
-      final repo = InMemoryTodoRepo();
+      const userId = "1";
 
-      const input = AddTodoInput(
-        title: "New Todo",
-        description: "new",
-        userId: "1",
+      final repo = InMemoryTodoRepo(initialTodos: []);
+
+      await repo.addTodo(
+        const AddTodoInput(
+          title: "New Todo",
+          description: "new",
+          userId: userId,
+        ),
       );
-
-      await repo.addTodo(input);
 
       assertion(Iterable<Todo> todos) => todos.any(
             (todo) =>
                 todo.title == "New Todo" &&
                 todo.description == "new" &&
-                todo.userId == "1",
+                todo.userId == userId,
           );
 
       expect(
-        repo.getTodosByUserId("1"),
+        repo.getTodosByUserId(userId),
         emits(predicate(assertion, "successfully added todo")),
       );
     });
@@ -119,93 +100,70 @@ void main() {
 
   group("completeTodo()", () {
     test("should update an incomplete todo to completed", () async {
-      const todos = [
-        Todo(
-          id: "1",
-          title: "Todo#1",
-          description: "first",
-          completed: true,
-          userId: "0",
-        ),
-        Todo(
-          id: "2",
-          title: "Todo to complete",
-          description: "the incomplete todo to be updated to completed",
-          completed: false,
-          userId: "0",
-        ),
-      ];
+      const todoId = "2";
 
-      final repo = InMemoryTodoRepo(initialTodos: todos);
+      final repo = InMemoryTodoRepo(initialTodos: [
+        TodoBuilder()
+            .withId(todoId)
+            .withTitle("Todo to complete")
+            .withDescription("the incomplete todo to be updated to completed")
+            .asInProgress()
+            .build(),
+      ]);
 
-      await repo.completeTodo("2");
+      await repo.completeTodo(todoId);
 
       assertion(Todo todo) => todo.completed == true;
 
       expect(
-        repo.getTodo("2"),
+        repo.getTodo(todoId),
         emits(predicate(assertion, "successfully completed todo")),
       );
     });
   });
 
   group("revertTodo()", () {
-    test("should update a completed todo back to incomplete state", () async {
-      const todos = [
-        Todo(
-          id: "1",
-          title: "Todo to revert",
-          description: "the completed todo to be updated back to incomplete",
-          completed: true,
-          userId: "0",
-        ),
-        Todo(
-          id: "2",
-          title: "Todo#1",
-          description: "second",
-          completed: false,
-          userId: "0",
-        ),
-      ];
-      final repo = InMemoryTodoRepo(initialTodos: todos);
+    test("should revert a completed todo back to in-progress", () async {
+      const todoId = "1";
+      final repo = InMemoryTodoRepo(initialTodos: [
+        TodoBuilder()
+            .withId(todoId)
+            .withTitle("Todo to revert")
+            .withDescription(
+              "the completed todo to be updated back to incomplete",
+            )
+            .asCompleted()
+            .build(),
+      ]);
 
-      await repo.revertTodo("1");
+      await repo.revertTodo(todoId);
 
       assertion(Todo todo) => todo.completed == false;
 
       expect(
-        repo.getTodo("1"),
+        repo.getTodo(todoId),
         emits(predicate(assertion, "successfully reverted todo")),
       );
     });
   });
 
   group("deleteTodo()", () {
-    test("should remove todo from the list", () async {
-      const todos = [
-        Todo(
-          id: "1",
-          title: "Todo to remove",
-          description: "the todo to remove from the list",
-          completed: true,
-          userId: "0",
-        ),
-        Todo(
-          id: "2",
-          title: "Todo#1",
-          description: "second",
-          completed: false,
-          userId: "0",
-        ),
-      ];
-      final repo = InMemoryTodoRepo(initialTodos: todos);
+    test("should remove todo from repo", () async {
+      const todoId = "1";
+      final repo = InMemoryTodoRepo(initialTodos: [
+        TodoBuilder()
+            .withId(todoId)
+            .withTitle("Todo to remove")
+            .withDescription("the todo to remove from the list")
+            .build(),
+      ]);
 
-      await repo.deleteTodo("1");
+      await repo.deleteTodo(todoId);
 
-      assertion(Iterable<Todo> todos) => todos.every((todo) => todo.id != "1");
+      assertion(Todo? todo) => todo == null;
 
       expect(
-        repo.getTodosByUserId("0"),
+        repo.getTodo(todoId),
         emits(predicate(assertion, "successfully deleted todo")),
       );
     });
