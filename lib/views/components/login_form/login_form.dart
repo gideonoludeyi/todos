@@ -50,7 +50,6 @@ class _LoginFormState extends State<LoginForm> {
           TextFormField(
             decoration: const InputDecoration(
               labelText: kEmailLabel,
-              hintText: "john@email.com",
             ),
             controller: _emailController,
             validator: _emailValidator,
@@ -60,7 +59,6 @@ class _LoginFormState extends State<LoginForm> {
           TextFormField(
             decoration: const InputDecoration(
               labelText: kPasswordLabel,
-              hintText: "secret",
             ),
             controller: _passwordController,
             validator: _passwordValidator,
