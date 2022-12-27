@@ -105,12 +105,10 @@ void main() {
     });
 
     group("signup()", () {
-      test(
-          "should create a new account, without authenticating as the active account",
-          () async {
+      test("should create a new account without authenticating", () async {
         final authService = InMemoryAuthService();
 
-        final successful = await authService.signup(
+        await authService.signup(
           RegistrationInput(
             name: "John",
             email: "john@email.com",
@@ -119,10 +117,6 @@ void main() {
           ),
         );
 
-        expect(
-          successful,
-          predicate((value) => value == true, "successfully signed up"),
-        );
         expect(authService.state, AuthState.unauthenticated);
       });
     });

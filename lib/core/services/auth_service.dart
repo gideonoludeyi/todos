@@ -5,7 +5,7 @@ abstract class AuthService {
   AuthState get state;
 
   Future<void> login(AuthCredentials credentials);
-  Future<bool> signup(RegistrationInput input);
+  Future<void> signup(RegistrationInput input);
   Future<void> logout();
 }
 

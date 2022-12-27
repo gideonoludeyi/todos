@@ -48,7 +48,7 @@ class InMemoryAuthService implements AuthService {
   }
 
   @override
-  Future<bool> signup(RegistrationInput input) async {
+  Future<void> signup(RegistrationInput input) async {
     final user = User(
       id: "${DateTime.now().millisecondsSinceEpoch}",
       name: input.name,
@@ -57,8 +57,6 @@ class InMemoryAuthService implements AuthService {
 
     _users.add(user);
     _passwords[user.id] = input.password;
-
-    return true;
   }
 
   void _setActiveUser(User? userOrNull) {
