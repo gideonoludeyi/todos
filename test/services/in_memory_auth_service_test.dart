@@ -1,43 +1,45 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:todos/core/models/user.model.dart' show User;
 import 'package:todos/core/services/auth_service.dart';
 import 'package:todos/services/in_memory_auth_service.dart'
     show InMemoryAuthService;
+
+import '../test_helper/builders/user_builder.dart';
 
 void main() {
   group("InMemoryAuthService", () {
     group("login()", () {
       test("should authenticate if credentials match an existing account",
           () async {
-        const user1 = User(id: "1", name: "User#1", email: "user1@email.com");
+        const email = "user1@email.com";
+        const password = "password";
+        final user = UserBuilder().withId("1").withEmail(email).build();
 
         final authService = InMemoryAuthService(
-          initialUsers: [user1],
-          passwords: {"1": "password"},
+          initialUsers: [user],
+          passwords: {user.id: password},
         );
 
         await authService.login(
-          AuthCredentials(email: "user1@email.com", password: "password"),
+          AuthCredentials(email: email, password: password),
         );
 
         expect(authService.state, AuthState.authenticated);
-        expect(authService.activeUser$, emits(user1));
+        expect(authService.activeUser$, emits(user));
       });
 
       test(
           "should not authenticate if credentials do not match any existing account",
           () async {
-        const users = [
-          User(id: "1", name: "User#1", email: "user1@email.com"),
-        ];
+        const email = "user1@email.com";
+        final user = UserBuilder().withId("1").withEmail(email).build();
 
         final authService = InMemoryAuthService(
-          initialUsers: users,
-          passwords: {"1": "password"},
+          initialUsers: [user],
+          passwords: {user.id: "password"},
         );
 
         await authService.login(
-          AuthCredentials(email: "user1@email.com", password: "wrong_password"),
+          AuthCredentials(email: email, password: "wrong_password"),
         );
 
         expect(authService.state, AuthState.unauthenticated);
@@ -47,54 +49,63 @@ void main() {
       test(
           "should not authenticate account, if there's an existing authenticated account",
           () async {
-        const user1 = User(
-          id: "1",
-          name: "Authenticated user",
-          email: "user1@email.com",
-        );
+        final authenticatedUser = UserBuilder()
+            .withId("1")
+            .withEmail("user1@email.com")
+            .withName("Authenticated User")
+            .build();
 
-        const user2 = User(
-          id: "2",
-          name: "User attempting to authenticate",
-          email: "user2@email.com",
-        );
+        final userAttemptingToAuthenticate = UserBuilder()
+            .withId("2")
+            .withEmail("user2@email.com")
+            .withName("User attempting to authenticate")
+            .build();
 
-        const passwords = {"1": "password", "2": "secret"};
+        final passwords = {
+          authenticatedUser.id: "password",
+          userAttemptingToAuthenticate.id: "secret"
+        };
 
         final authService = InMemoryAuthService(
-          initialUsers: [user1, user2],
+          initialUsers: [authenticatedUser, userAttemptingToAuthenticate],
           passwords: passwords,
         );
 
         await authService.login(
-          AuthCredentials(email: user1.email, password: passwords[user1.id]!),
+          AuthCredentials(
+            email: authenticatedUser.email,
+            password: passwords[authenticatedUser.id]!,
+          ),
         );
 
         await authService.login(
-          AuthCredentials(email: user2.email, password: passwords[user2.id]!),
+          AuthCredentials(
+            email: userAttemptingToAuthenticate.email,
+            password: passwords[userAttemptingToAuthenticate.id]!,
+          ),
         );
 
         expect(authService.state, AuthState.authenticated);
-        expect(authService.activeUser$, emits(user1));
+        expect(authService.activeUser$, emits(authenticatedUser));
       });
     });
 
     group("logout()", () {
       test("should sign out of the authenticated account session", () async {
-        const user1 = User(
-          id: "1",
-          name: "Authenticated user",
-          email: "user1@email.com",
-        );
+        final user = UserBuilder()
+            .withId("1")
+            .withEmail("user@email.com")
+            .withName("Authenticated User")
+            .build();
 
-        const passwords = {"1": "password"};
+        final passwords = {user.id: "password"};
 
         final authService = InMemoryAuthService(
-          initialUsers: [user1],
+          initialUsers: [user],
           passwords: passwords,
         );
         await authService.login(
-          AuthCredentials(email: user1.email, password: passwords[user1.id]!),
+          AuthCredentials(email: user.email, password: passwords[user.id]!),
         );
 
         await authService.logout();

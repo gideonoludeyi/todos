@@ -7,7 +7,7 @@ class TodoBuilder {
   final bool completed;
   final String userId;
 
-  factory TodoBuilder() => TodoBuilder._(
+  factory TodoBuilder() => const TodoBuilder._(
         id: "gid://Todo/0",
         title: "the title",
         description: "the description",
@@ -23,7 +23,7 @@ class TodoBuilder {
         userId: todo.userId,
       );
 
-  TodoBuilder._({
+  const TodoBuilder._({
     required this.id,
     required this.title,
     required this.description,
