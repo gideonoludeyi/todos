@@ -40,10 +40,7 @@ class _HomeState extends State<Home> {
             actions: [
               TextButton(
                 onPressed: () => authService.logout(),
-                child: const Text(
-                  kLogoutText,
-                  style: TextStyle(color: Colors.white),
-                ),
+                child: const Text(kLogoutText),
               ),
             ],
           ),

@@ -23,6 +23,9 @@ class App extends StatelessWidget {
 
         return MaterialApp.router(
           routerConfig: router,
+          theme: ThemeData(
+            useMaterial3: true,
+          ),
         );
       },
     );
