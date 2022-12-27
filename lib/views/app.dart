@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todos/core/services/auth_service.dart';
-import 'package:todos/views/components/page_loading_indicator/page_loading_indicator.dart';
 
+import 'components/page_loading_indicator/page_loading_indicator.dart';
 import 'routes/routes.dart' as routes;
 
 class App extends StatelessWidget {
