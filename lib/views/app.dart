@@ -4,7 +4,6 @@ import 'package:todos/core/services/auth_service.dart';
 import 'package:todos/views/components/page_loading_indicator/page_loading_indicator.dart';
 
 import 'routes/routes.dart' as routes;
-import 'routes/unauthenticated_routes.dart' as uroutes;
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -18,11 +17,8 @@ class App extends StatelessWidget {
       builder: (context, snapshot) {
         if (!snapshot.hasData) return const PageLoadingIndicator();
 
-        final isAuthenticated = snapshot.data!;
-        final router = isAuthenticated ? routes.router : uroutes.router;
-
         return MaterialApp.router(
-          routerConfig: router,
+          routerConfig: routes.router,
           theme: ThemeData(
             useMaterial3: true,
           ),

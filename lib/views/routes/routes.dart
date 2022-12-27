@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:todos/core/services/auth_service.dart';
 import 'package:todos/views/pages/home.dart';
+import 'package:todos/views/pages/login.dart';
+import 'package:todos/views/pages/signup.dart';
 import 'package:todos/views/pages/todo.dart';
 
 part 'routes.g.dart';
@@ -21,8 +25,19 @@ final router = GoRouter(
 @immutable
 class HomeRoute extends GoRouteData {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, GoRouterState state) {
     return const Home();
+  }
+
+  @override
+  String? redirect(BuildContext context, GoRouterState state) {
+    var authService = context.read<AuthService>();
+    switch (authService.state) {
+      case AuthState.unauthenticated:
+        return LoginRoute().location;
+      default:
+        return null;
+    }
   }
 }
 
@@ -35,25 +50,62 @@ class TodoRoute extends GoRouteData {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, GoRouterState state) {
     return TodoScreen(todoId: todoId);
+  }
+
+  @override
+  String? redirect(BuildContext context, GoRouterState state) {
+    var authService = context.read<AuthService>();
+    switch (authService.state) {
+      case AuthState.unauthenticated:
+        return LoginRoute().location;
+      default:
+        return null;
+    }
   }
 }
 
-@TypedGoRoute<_LoginRoute>(
+@TypedGoRoute<LoginRoute>(
   path: '/login',
 )
 @immutable
-class _LoginRoute extends GoRouteData {
+class LoginRoute extends GoRouteData {
   @override
-  String redirect() => HomeRoute().location;
+  Widget build(BuildContext context, GoRouterState state) {
+    return const LoginScreen();
+  }
+
+  @override
+  String? redirect(BuildContext context, GoRouterState state) {
+    var authService = context.read<AuthService>();
+    switch (authService.state) {
+      case AuthState.authenticated:
+        return HomeRoute().location;
+      default:
+        return null;
+    }
+  }
 }
 
-@TypedGoRoute<_SignupRoute>(
+@TypedGoRoute<SignupRoute>(
   path: '/signup',
 )
 @immutable
-class _SignupRoute extends GoRouteData {
+class SignupRoute extends GoRouteData {
   @override
-  String redirect() => HomeRoute().location;
+  Widget build(BuildContext context, GoRouterState state) {
+    return const SignupScreen();
+  }
+
+  @override
+  String? redirect(BuildContext context, GoRouterState state) {
+    var authService = context.read<AuthService>();
+    switch (authService.state) {
+      case AuthState.authenticated:
+        return HomeRoute().location;
+      default:
+        return null;
+    }
+  }
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todos/core/services/auth_service.dart';
 import 'package:todos/views/components/login_form/login_form.dart';
-import 'package:todos/views/routes/unauthenticated_routes.dart' as uroutes;
+import 'package:todos/views/routes/routes.dart' as routes;
 
 const kDontHaveAnAccountText = "Don't have an account?";
 const kSignUpButtonText = "Sign Up";
@@ -26,7 +26,12 @@ class _LoginScreenState extends State<LoginScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             LoginForm(
-              onSubmit: (credentials) => auth.login(credentials),
+              onSubmit: (credentials) {
+                auth.login(credentials);
+
+                if (!mounted) return;
+                routes.HomeRoute().go(context);
+              },
             ),
             const Divider(height: 32.0),
             _signUpRedirectLink(),
@@ -43,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
         children: [
           WidgetSpan(
             child: TextButton(
-              onPressed: () => uroutes.SignupRoute().go(context),
+              onPressed: () => routes.SignupRoute().go(context),
               child: const Text(kSignUpButtonText),
             ),
             alignment: PlaceholderAlignment.middle,

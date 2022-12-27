@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todos/core/services/auth_service.dart';
 import 'package:todos/views/components/signup_form/signup_form.dart';
-import 'package:todos/views/routes/unauthenticated_routes.dart' as uroutes;
+import 'package:todos/views/routes/routes.dart' as routes;
 
 const kAlreadyHaveAnAccountText = "Already have an account?";
 const kLoginButtonText = "Login";
@@ -30,7 +30,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 await auth.signup(input);
 
                 if (!mounted) return;
-                uroutes.LoginRoute().go(context);
+                routes.LoginRoute().go(context);
               },
             ),
             const Divider(height: 32.0),
@@ -48,7 +48,7 @@ class _SignupScreenState extends State<SignupScreen> {
         children: [
           WidgetSpan(
             child: TextButton(
-              onPressed: () => uroutes.LoginRoute().go(context),
+              onPressed: () => routes.LoginRoute().go(context),
               child: const Text(kLoginButtonText),
             ),
             alignment: PlaceholderAlignment.middle,

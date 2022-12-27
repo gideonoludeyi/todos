@@ -54,8 +54,8 @@ GoRoute get $loginRoute => GoRouteData.$route(
       factory: $LoginRouteExtension._fromState,
     );
 
-extension $LoginRouteExtension on _LoginRoute {
-  static _LoginRoute _fromState(GoRouterState state) => _LoginRoute();
+extension $LoginRouteExtension on LoginRoute {
+  static LoginRoute _fromState(GoRouterState state) => LoginRoute();
 
   String get location => GoRouteData.$location(
         '/login',
@@ -71,8 +71,8 @@ GoRoute get $signupRoute => GoRouteData.$route(
       factory: $SignupRouteExtension._fromState,
     );
 
-extension $SignupRouteExtension on _SignupRoute {
-  static _SignupRoute _fromState(GoRouterState state) => _SignupRoute();
+extension $SignupRouteExtension on SignupRoute {
+  static SignupRoute _fromState(GoRouterState state) => SignupRoute();
 
   String get location => GoRouteData.$location(
         '/signup',
