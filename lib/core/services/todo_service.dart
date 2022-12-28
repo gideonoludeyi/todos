@@ -9,6 +9,15 @@ abstract class TodoService {
   Future<void> deleteTodo(String id);
 }
 
+abstract class ITodoService {
+  Future<Todo?> getTodo(String id);
+  Future<Iterable<Todo>> getTodos();
+  Future<String> addTodo(AddTodoInput input);
+  Future<void> completeTodo(String id);
+  Future<void> revertTodo(String id);
+  Future<void> removeTodo(String id);
+}
+
 class AddTodoInput {
   final String title;
   final String description;
