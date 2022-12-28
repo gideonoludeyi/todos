@@ -40,7 +40,6 @@ class InMemoryTodoRepo implements TodoService {
         title: todo.title,
         description: todo.description,
         completed: true,
-        userId: todo.userId,
       ),
     );
   }
@@ -56,7 +55,6 @@ class InMemoryTodoRepo implements TodoService {
         title: todo.title,
         description: todo.description,
         completed: false,
-        userId: todo.userId,
       ),
     );
   }
@@ -99,7 +97,7 @@ class InMemoryTodoRepo implements TodoService {
                 title: input.title,
                 description: input.description,
                 completed: input.completed,
-                userId: input.userId,
+                userId: todo.userId,
               )
             : todo)
         .toList();
@@ -108,7 +106,9 @@ class InMemoryTodoRepo implements TodoService {
   }
 
   Todo? _findTodoById(String id) {
-    return _todos.firstWhere((todo) => todo.id == id);
+    return _todos
+        .cast<Todo?>()
+        .firstWhere((todo) => todo?.id == id, orElse: () => null);
   }
 }
 
@@ -116,12 +116,10 @@ class _UpdateTodoInput {
   final String title;
   final String description;
   final bool completed;
-  final String userId;
 
   _UpdateTodoInput({
     required this.title,
     required this.description,
     required this.completed,
-    required this.userId,
   });
 }
