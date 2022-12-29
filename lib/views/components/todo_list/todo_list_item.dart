@@ -23,8 +23,10 @@ class TodoListItem extends StatelessWidget {
         subtitle: Text(todo.status),
         leading: Checkbox(
           value: todo.completed,
-          onChanged: (value) =>
-              value == true ? onComplete?.call() : onRevert?.call(),
+          onChanged: (value) {
+            if (value == null) return;
+            return value ? onComplete?.call() : onRevert?.call();
+          },
         ),
         onTap: onTap,
       ),
