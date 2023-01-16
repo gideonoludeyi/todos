@@ -1,4 +1,5 @@
 # Miscellaneous
+*.jks
 *.class
 *.log
 *.pyc
