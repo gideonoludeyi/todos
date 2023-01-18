@@ -20,22 +20,24 @@ class _LoginScreenState extends State<LoginScreen> {
     final auth = context.watch<AuthService>();
 
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 64.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            LoginForm(
-              onSubmit: (credentials) async {
-                await auth.login(credentials);
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 64.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              LoginForm(
+                onSubmit: (credentials) async {
+                  await auth.login(credentials);
 
-                if (!mounted) return;
-                routes.HomeRoute().go(context);
-              },
-            ),
-            const Divider(height: 32.0),
-            _signUpRedirectLink(),
-          ],
+                  if (!mounted) return;
+                  routes.HomeRoute().go(context);
+                },
+              ),
+              const Divider(height: 32.0),
+              _signUpRedirectLink(),
+            ],
+          ),
         ),
       ),
     );

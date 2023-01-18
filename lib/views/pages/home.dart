@@ -49,17 +49,19 @@ class _HomeState extends State<Home> {
               ),
             ],
           ),
-          body: StreamBuilder<Iterable<models.Todo>>(
-            stream: todoService.getTodosByUserId(user.id),
-            initialData: const [],
-            builder: (context, snapshot) {
-              return TodoList(
-                todos: snapshot.data ?? const [],
-                onComplete: (id) => todoService.completeTodo(id),
-                onRevert: (id) => todoService.revertTodo(id),
-                onTap: (id) => routes.TodoRoute(todoId: id).go(context),
-              );
-            },
+          body: SafeArea(
+            child: StreamBuilder<Iterable<models.Todo>>(
+              stream: todoService.getTodosByUserId(user.id),
+              initialData: const [],
+              builder: (context, snapshot) {
+                return TodoList(
+                  todos: snapshot.data ?? const [],
+                  onComplete: (id) => todoService.completeTodo(id),
+                  onRevert: (id) => todoService.revertTodo(id),
+                  onTap: (id) => routes.TodoRoute(todoId: id).go(context),
+                );
+              },
+            ),
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () => showAddTodoFormModal(

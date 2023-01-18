@@ -53,42 +53,44 @@ class _TodoScreenState extends State<TodoScreen> {
               ),
             ],
           ),
-          body: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  todo.status.toUpperCase(),
-                  style: const TextStyle(
-                    fontSize: 10.0,
-                    fontWeight: FontWeight.w400,
-                    letterSpacing: 1.5,
-                    decoration: TextDecoration.underline,
-                  ),
-                ),
-                const SizedBox(height: 8.0),
-                Text(
-                  todo.title,
-                  style: const TextStyle(
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.bold,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                const SizedBox(height: 16.0),
-                Text(todo.description),
-                const SizedBox(height: 24.0),
-                Row(children: [
-                  Expanded(
-                    child: TodoToggleButton(
-                      value: todo.completed,
-                      onRevert: () => todoService.revertTodo(todo.id),
-                      onComplete: () => todoService.completeTodo(todo.id),
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    todo.status.toUpperCase(),
+                    style: const TextStyle(
+                      fontSize: 10.0,
+                      fontWeight: FontWeight.w400,
+                      letterSpacing: 1.5,
+                      decoration: TextDecoration.underline,
                     ),
                   ),
-                ])
-              ],
+                  const SizedBox(height: 8.0),
+                  Text(
+                    todo.title,
+                    style: const TextStyle(
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.bold,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  const SizedBox(height: 16.0),
+                  Text(todo.description),
+                  const SizedBox(height: 24.0),
+                  Row(children: [
+                    Expanded(
+                      child: TodoToggleButton(
+                        value: todo.completed,
+                        onRevert: () => todoService.revertTodo(todo.id),
+                        onComplete: () => todoService.completeTodo(todo.id),
+                      ),
+                    ),
+                  ])
+                ],
+              ),
             ),
           ),
         );
